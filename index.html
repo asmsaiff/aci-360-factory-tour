@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width, shrink-to-fit=no">
+    <title>Virtual Tour - Nvisio Office</title>
+
+    <style>
+        html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        a:link, a:visited{
+            color: #bdc3c7;
+        }
+    </style>
+</head>
+<body>
+    <script src="./three.min.js"></script>
+    <script src="./panolens.min.js"></script>
+
+    <script>
+        var videoPanorama, videoPanorama2, videoPanorama3, videoPanorama4;
+
+        videoPanorama = new PANOLENS.VideoPanorama( 'source/1.mp4', {
+            container: document.querySelector('body'),
+            autoplay: true,
+            muted: true,
+            playsinline: true,
+            controlBar: false
+        });
+
+        videoPanorama2 = new PANOLENS.VideoPanorama( 'source/2.mp4', {
+            container: document.querySelector('body'),
+            autoplay: true,
+            muted: true,
+            playsinline: true,
+            controlBar: false
+        });
+
+        videoPanorama3 = new PANOLENS.VideoPanorama( 'source/3.mp4', {
+            container: document.querySelector('body'),
+            autoplay: true,
+            muted: true,
+            playsinline: true,
+            controlBar: false
+        });
+
+        videoPanorama4 = new PANOLENS.VideoPanorama( 'source/4.mp4', {
+            container: document.querySelector('body'),
+            autoplay: true,
+            muted: true,
+            playsinline: true,
+            controlBar: false
+        });
+
+        viewer = new PANOLENS.Viewer({
+            autoHideInfospot: false,
+            autoHideControlBar: true,
+            controlBar: false
+        });
+        // Get the camera instance from the viewer
+        const camera = viewer.getCamera();
+
+        // Change the FOV value (e.g., to zoom in or out)
+        camera.fov = 100;
+        camera.position.set(0, 20, 0);
+
+        viewer.getControl().target.set(-0.01, 0, 0); // Sets X, Y, Z coordinates
+        // viewer.getControl().target.set(.15, .02, 0); // Sets X, Y, Z coordinates
+
+        viewer.getControl().update();
+        camera.updateProjectionMatrix();
+
+
+        viewer.add( videoPanorama );
+        viewer.add( videoPanorama2 );
+        viewer.add( videoPanorama3 );
+        viewer.add( videoPanorama4 );
+
+        // Linking between panoramas
+
+        function spherePosition(x, y, z, radius = 5000) {
+            return new THREE.Vector3(x, y, z)
+                .normalize()
+                .multiplyScalar(radius);
+        }
+
+        // Pair with custom scale and image
+        videoPanorama.link( videoPanorama2, spherePosition(5, 0, 45) );
+        videoPanorama2.link( videoPanorama3, spherePosition(-25, 0, 45) );
+        videoPanorama3.link( videoPanorama4, spherePosition(-25, 0, 45) );
+        videoPanorama4.link( videoPanorama, spherePosition(-25, 0, 45) );
+    </script>
+</body>
+</html>
